@@ -54,7 +54,7 @@ function showError($msg){
                     <div class="login-content">
                         <div class="login-logo">
                             <a href="#">
-                                <img src="images/icon/logo.png" alt="Logo">
+                                <img src="images/icon/logo_web_s.png" alt="4Ganize Adminpanel" />
                             </a>
                         </div>
                         <div class="login-form">

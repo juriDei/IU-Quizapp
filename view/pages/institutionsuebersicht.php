@@ -85,7 +85,7 @@
             <div class="main-content">
                 <div class="section__content section__content--p30">
                     <div class="container-fluid">
-                        <button class="mb-4 p-2 bg-success text-white rounded" id="newAssociation" data-action="newAssociation" data-toggle='modal' data-target='#createAssociationModal'>Neue Institution anlegen</button>
+                        <button class="mb-4 p-2 bg-success text-white rounded" id="newAssociation" data-action="newAssociation" data-toggle='modal' data-target='#createAssociationModal'>Neue Institution hinzufügen</button>
                         <table id="table_id" class="display">
                             <thead>
                                 <tr>
