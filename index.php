@@ -1,5 +1,6 @@
 <?php
 session_start();
+define('BASE_URL','/quizapp/');
 // Autoload files using composer
 require_once 'controller/DBConnection.php';
 require_once dirname(__DIR__) . '/vendor/autoload.php';
@@ -9,6 +10,18 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 use PHPAuth\Config as PHPAuthConfig;
 use PHPAuth\Auth as PHPAuth;
 
+function checkAuth($auth,$currentRoute) {
+  // Login-Route und möglicherweise andere öffentliche Routen ausschließen
+   $publicRoutes = ['/quizapp/login', '/quizapp/register', '/quizapp/forget-pass']; // Fügen Sie hier alle öffentlichen Routen hinzu
+
+  if (in_array($currentRoute, $publicRoutes)) {
+        return;
+  }
+  if (!$auth->isLogged()) {
+      header('Location: ' . BASE_URL . 'login');
+      exit();
+  }
+}
 
 
 $config = new PHPAuthConfig(DBConnection::getDBConnection());
@@ -17,6 +30,14 @@ $auth = new PHPAuth(DBConnection::getDBConnection(), $config);
 
   // create composer instances
   $router = new \Bramus\Router\Router();
+
+  $router->before('GET', '/.*', function() use ($auth) {
+    $currentRoute = $_SERVER['REQUEST_URI'];
+    if($currentRoute != '/quizapp/login'){
+      checkAuth($auth,$currentRoute);
+    }
+  });
+
   //POST-Routen/Controller
   $router->post('/controller/register', function() {
     include("controller/RegisterController.php");
@@ -44,14 +65,10 @@ $auth = new PHPAuth(DBConnection::getDBConnection(), $config);
     $_SESSION['view'] = 'Dashboard';
     include("view/pages/dashboard.php");
   });
-  $router->get('/meldung', function() {
-    $_SESSION['view'] = 'Meldung';
-    include("view/pages/meldung.php");
+  $router->set404(function() {
+    include("view/pages/dashboard.php");
   });
-  $router->get('/institutionsuebersicht', function() {
-    $_SESSION['view'] = 'Institutionsübersicht';
-    include("view/pages/institutionsuebersicht.php");
-  });
+
 
 //Logoutroute
 $router->get('/logout', function() {

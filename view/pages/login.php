@@ -1,18 +1,16 @@
 <?php
+
 function showError($msg){
-    $error =  "<div class='sufee-alert alert with-close alert-danger alert-dismissible fade show'>
-                <span class='badge badge-pill badge-danger'>Fehler</span>
-                {$msg}
-                <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-                    <span aria-hidden='true'>&times;</span>
-                </button>
+    $error =  "<div class='alert alert-danger d-flex align-items-center alert-dismissible' role='alert'>
+                <div>{$msg}</div>
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Schließen'></button>
                </div>";
 
     return $error;
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <!-- Required meta tags-->
@@ -20,24 +18,12 @@ function showError($msg){
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title Page-->
-    <title>4Ganize Adminpanel</title>
-
-    <!-- Fontfaces CSS-->
-    <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <title>Quizapp</title>
 
     <!-- Bootstrap CSS-->
-    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="all">
 
     <!-- Vendor CSS-->
-    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
-    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
-    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
-    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
     <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
 
     <!-- Main CSS-->
@@ -54,7 +40,7 @@ function showError($msg){
                     <div class="login-content">
                         <div class="login-logo">
                             <a href="#">
-                                <img src="images/icon/logo_web_s.png" alt="4Ganize Adminpanel" />
+                                <img src="images/icon/Quizapp_Logo.png" alt="Quizapp" />
                             </a>
                         </div>
                         <div class="login-form">
@@ -62,20 +48,21 @@ function showError($msg){
                                 <div class="form-group">
                                     <label>E-Mail</label>
                                     <input class="au-input au-input--full" type="email" name="email" placeholder="E-Mail">
-                                </div>
+                                </div><br/>
                                 <div class="form-group">
                                     <label>Passwort</label>
                                     <input class="au-input au-input--full" type="password" name="password" placeholder="Passwort">
-                                </div>
+                                </div><br/>
                                 <div class="login-checkbox">
                                     <label>
                                         <input type="checkbox" name="remember">Eingeloggt bleiben
                                     </label>
                                     <label>
-                                        <a href="forget-pass">Passwort vergessen</a>
+                                        <a href="register">Registrieren</a>
                                     </label>
-                                </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Login</button>
+                                </div><br>
+                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
+                                <p class="text-center fw-semibold">Noch kein Mitglied? <a class="text-decoration-none" href="register">Hier zur Registrierung</a></p>
                             </form>
                         </div>
                     </div>
@@ -86,29 +73,9 @@ function showError($msg){
     </div>
 
     <!-- Jquery JS-->
-    <script src="vendor/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap JS-->
-    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
-    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS       -->
-    <script src="vendor/slick/slick.min.js">
-    </script>
-    <script src="vendor/wow/wow.min.js"></script>
-    <script src="vendor/animsition/animsition.min.js"></script>
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
-    </script>
-    <script src="vendor/counter-up/jquery.waypoints.min.js"></script>
-    <script src="vendor/counter-up/jquery.counterup.min.js">
-    </script>
-    <script src="vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="vendor/chartjs/Chart.bundle.min.js"></script>
-    <script src="vendor/select2/select2.min.js">
-    </script>
-
-    <!-- Main JS-->
-    <script src="js/main.js"></script>
-
 </body>
 
 </html>
