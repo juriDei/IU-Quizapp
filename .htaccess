@@ -5,3 +5,7 @@ RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
+SetEnv DB_HOST "localhost"
+SetEnv DB_NAME "quizapp"
+SetEnv DB_USER "juri"
+SetEnv DB_PASS "Renolino!?94"
