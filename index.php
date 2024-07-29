@@ -65,6 +65,10 @@ $router->post('/questions/create', function () {
   $controller = new QuestionController();
   $controller->create();
 });
+$router->post('/avatar-upload', function () {
+  $controller = new UploadController();
+  $controller->upload();
+});
 
 
 //GET-Routen/Seiten

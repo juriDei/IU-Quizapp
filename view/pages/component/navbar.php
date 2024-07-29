@@ -1,29 +1,10 @@
-<style>
-    .link-hover:hover{
-        background-color: #f0f0f0;
-        /* Adjust the color as needed */
-        border-radius: 5px;
-        border-left: 5px solid #52E0FF;
-        /* Optional: to add rounded corners */
-    }
-    .breadcrumb-item:hover{
-        border-left: none;
-    }
+<?php
+$user = new UserModel($_SESSION['uid']);
+$avatar = $user->getAvatar();
+?>
 
-    .breadcrumb-item+.breadcrumb-item::before {
-        content: ">";
-    }
+<link href="./css/navbar.css" rel="stylesheet" media="all">
 
-    .search-form .form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .search-form .btn {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-</style>
 <nav class="navbar navbar-white bg-white p-4">
     <div class="container-fluid">
         <div class="d-flex justify-content-between w-100">
@@ -33,9 +14,14 @@
                 </button>
             </div>
             <form class="d-flex ms-auto search-form">
-                <input class="form-control me-0 rounded-start " type="search" placeholder="Suche" aria-label="Search">
-                <button class="btn btn-primary rounded-end rounded-0" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input class="form-control me-0 rounded-start" type="search" placeholder="Suche" aria-label="Search">
+                <button class="btn btn-primary rounded-end rounded-0" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </form>
+            <div class="d-flex align-items-center ms-3">
+                <img id="avatar-image" src="<?= ($avatar != null) ? $avatar : "images/avatar.png" ?>" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px;"  data-bs-toggle="modal" data-bs-target="#avatarModal" title="Profil anzeigen">
+            </div>
         </div>
     </div>
 </nav>
@@ -50,15 +36,6 @@
 </nav>
 
 <div class="offcanvas offcanvas-start bg-white text-dark" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
-    <div class="offcanvas-header">
-        <div class="profile-section">
-            <img src="./images/quizapp_logo.png" alt="Avatar" width="90" height="90">
-            <div class="profile-info">
-                <strong><?= $user->getFullname() ?></strong><br>
-                <?= $user->getEmail() ?>
-            </div>
-        </div>
-    </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between">
         <ul class="list-unstyled mt-3 flex-grow-1">
             <li class="p-3 link-hover"><i class="fa-solid fa-user"></i>&emsp;<a href="dashboard" class="text-dark text-decoration-none">Dashboard</a></li>
@@ -70,3 +47,6 @@
         </div>
     </div>
 </div>
+<?php require_once("quizapp-scripts.php"); ?>
+<script src="./js/navbar.js"></script>
+<?php include("modal/profileModal.php"); ?>

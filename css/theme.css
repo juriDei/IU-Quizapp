@@ -716,6 +716,13 @@ section {
     color: #999;
 }
 
+/* ----- Toastmessages -----*/
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1055;
+}
 /* ----- Input ----- */
 .au-input {
     line-height: 43px;

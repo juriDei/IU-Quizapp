@@ -24,6 +24,7 @@ class RegisterController
         $email = $_POST['email'];
         $firstname = $_POST['firstname'];
         $lastname = $_POST['lastname'];
+        $courseOfStudy = $_POST['course_of_study'];
         $domain = $_POST['domain'];
         $password = $_POST['password'];
         $passwordRepeat = $_POST['password_repeat'];
@@ -37,13 +38,7 @@ class RegisterController
             $user = new UserModel($userId);
             $user->setFirstName($firstname);
             $user->setLastName($lastname);
-            /*// Aktivierungslink versenden
-            $token = $register['token'];
-
-            $subject = "Bestätigung Ihrer E-Mailadresse";
-            $body = "Bitte klicken Sie auf den folgenden Link, um Ihre Registrierung abzuschließen: <a href='http://localhost/quizapp/activate?{$token}'>http://localhost/quizapp/activate?{$token}</a>";
-
-            $this->mailController->sendActivationEmail($email, $subject, $body);*/
+            $user->setCourseOfStudy($courseOfStudy);
             
             MessageHandlerController::addSuccess('Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Bestätigung.');
             header('Location: /quizapp/login');

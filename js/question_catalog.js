@@ -57,20 +57,38 @@ function loadCatalogContent(moduleId) {
                 var content = '';
                 studentQuestions.forEach(function(question) {
                     var possibleAnswers = JSON.parse(question.possible_answers);
-                    var answersHtml = possibleAnswers.map(answer => `
-                <li class="list-group-item text-black">${answer.text}</li>
-            `).join('');
+                    if(question.question_type != 'open'){
+                        //Wenn keine offene Frage, werden die Antworten aufgelistet und die richtige mit Haken markiert
+                        var answersHtml = possibleAnswers.map(answer => `
+                            <li class="list-group-item text-black d-flex justify-content-between align-items-center">
+                                ${answer.text}
+                                ${answer.correct ? '<i class="fas fa-check text-success flex-start"></i>' : ''}
+                            </li>
+                        `).join('');
+                    }
+                    else{
+                        //Wenn offene Frage, dann ist wird direkt die Antwort ausgegeben
+                        var answersHtml = possibleAnswers.map(answer => `
+                            <li class="list-group-item text-black d-flex justify-content-between align-items-center">
+                                ${answer.correct}
+                            </li>
+                        `).join('');
+                    }
                     content += `
-                <div class="question border rounded p-2 mt-2 mb-2">
-                    <p class="question-text text-black fw-semibold float-start"><b>Frage:</b> ${question.question_text}</p>
-                    <button class="toggle-answers btn btn-link text-decoration-none float-end"><i class="fas fa-chevron-down"></i></button>
-                    <div class="answers" style="display: none;">
-                        <ul class="list-group mt-2 w-100">${answersHtml}</ul>
-                    </div><br>
-                    <button class="btn btn-link text-decoration-none text-success fs-5" title='Upvote'><i class="fas fa-thumbs-up"></i></button>
-                    <button class="btn btn-link text-decoration-none text-danger fs-5" title='Downvote'><i class="fas fa-thumbs-down"></i></button>
-                </div>
-            `;
+                    <div class="question p-3 mt-2 mb-2 border rounded shadow-sm">
+                        <b>Frage: ${question.question_text}</b>
+                        <button class="toggle-answers btn btn-link text-decoration-none float-end"><i class="fas fa-chevron-down"></i></button>
+                        <div class="answers" style="display: none;">
+                            <ul class="list-group mt-2 mb-2 w-100">${answersHtml}</ul>
+                            <button class="btn btn-link text-decoration-none text-success fs-6" title='Upvote'>
+                                <span class="badge p-2 text-bg-success"><i class="fas fa-thumbs-up"></i> Gefällt mir</span>
+                            </button>
+                            <button class="btn btn-link text-decoration-none text-danger fs-6" title='Downvote'>
+                                <span class="badge p-2 text-bg-danger"><i class="fas fa-thumbs-down"></i>  Gefällt mir nicht</span>
+                            </button>
+                        </div>
+                    </div>
+                 `;
                 });
                 $('#studentQuestionsContent').html(content);
             }
@@ -107,6 +125,31 @@ function resetModal() {
     $('#openQuestionAnswer textarea').val('');
     $('.answer-section').hide();
     $('#singleChoiceAnswers').show();
+}
+
+function showToast(message, type) {
+    const toastHTML = `
+        <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    const toastContainer = document.getElementById('toastContainer');
+    const toastElement = document.createElement('div');
+    toastElement.innerHTML = toastHTML;
+    toastContainer.appendChild(toastElement);
+
+    const toast = new bootstrap.Toast(toastElement.querySelector('.toast'));
+    toast.show();
+
+    // Remove toast from DOM after it hides
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
 }
 
 $(document).ready(function() {
@@ -201,19 +244,20 @@ $(document).ready(function() {
             correctAnswer: correctAnswer,
             moduleId: modulId // Hier können Sie die tatsächliche Modul-ID einfügen
         };
-        debugger;
+
         $.ajax({
             url: 'questions/create',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             success: function(response) {
-                alert('Frage erfolgreich gespeichert');
                 $('#addQuestionModal').modal('hide');
+                loadCatalogContent(modulId);
+                showToast('Frage wurde erfolgreich erstellt','success')
             },
             error: function(error) {
                 console.error('Error saving question:', error);
-                alert('Fehler beim Speichern der Frage');
+                showToast('Beim erstellen der Frage ist ein Fehler aufgetreten','danger')
             }
         });
     });

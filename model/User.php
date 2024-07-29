@@ -12,12 +12,12 @@ class UserModel
     protected $userId;
     protected $userData;
 
-    public function __construct()
+    public function __construct($userId)
     {
         $this->dbh = DBConnection::getDBConnection();
         $config = new PHPAuthConfig($this->dbh);
         $this->auth = new PHPAuth($this->dbh, $config);
-        $this->userId = $this->auth->getCurrentUser()['id'];
+        $this->userId = (!empty($userId)) ? $userId : $this->auth->getCurrentUser()['id'];
         $this->loadUserData();
     }
 
@@ -64,9 +64,32 @@ class UserModel
         return $this->userData['last_login'];
     }
 
+    public function getCourseOfStudy(){
+        return $this->userData['course_of_study'];
+    }
+
+
+    public function getAvatar() {
+        if ($this->userData['avatar']) {
+            // Bild aus der Datenbank abrufen und in Base64 umwandeln
+            $stmt = $this->dbh->prepare("SELECT avatar FROM phpauth_users WHERE id = :id");
+            $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $avatarBlob = $stmt->fetchColumn();
+
+            if ($avatarBlob !== false) {
+                // Erkennen des Bildtyps für den Data-URL Prefix
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mimeType = $finfo->buffer($avatarBlob);
+                $base64 = base64_encode($avatarBlob);
+                return "data:$mimeType;base64,$base64";
+            }
+        }
+        return null; // Rückgabe von null, falls kein Avatar gesetzt ist
+    }
+
     public function setEmail($email)
     {
-        $this->userData['email'] = $email;
         $stmt = $this->dbh->prepare("UPDATE phpauth_users SET email = :email WHERE id = :id");
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
@@ -75,7 +98,6 @@ class UserModel
 
     public function setFirstname($firstname)
     {
-        $this->userData['firstname'] = $firstname;
         $stmt = $this->dbh->prepare("UPDATE phpauth_users SET firstname = :firstname WHERE id = :id");
         $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
         $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
@@ -84,7 +106,6 @@ class UserModel
 
     public function setLastname($lastname)
     {
-        $this->userData['lastname'] = $lastname;
         $stmt = $this->dbh->prepare("UPDATE phpauth_users SET lastname = :lastname WHERE id = :id");
         $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
         $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
@@ -98,5 +119,19 @@ class UserModel
         $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
         $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function setAvatar($avatarBlob) {
+        $stmt = $this->dbh->prepare("UPDATE phpauth_users SET avatar = :avatar WHERE id = :id");
+        $stmt->bindParam(':avatar', $avatarBlob, PDO::PARAM_LOB);
+        $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function setCourseOfStudy($courseOfStudy) {
+        $stmt = $this->dbh->prepare("UPDATE phpauth_users SET course_of_study = :courseOfStudy WHERE id = :id");
+        $stmt->bindParam(':courseOfStudy', $courseOfStudy, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 //An dieser Stelle die Modelinstanziierung durch eine Controller ersetzen, da dieser mit dem Model kommuniziert und nicht die View mit dem Model
-$user = new UserModel();
+$user = new UserModel($_SESSION['uid']);
 $questionCatalog = new QuestionCatalogModel();
 ?>
 <style>
@@ -137,6 +137,7 @@ $questionCatalog = new QuestionCatalogModel();
                 </div>
             <?php } ?>
         </div>
+        <div class="toast-container" id="toastContainer"></div>
     </div>
     <?php include("component/modal/questionCatalogModal.php"); ?>
     <?php include("component/modal/addQuestionModal.php"); ?>
