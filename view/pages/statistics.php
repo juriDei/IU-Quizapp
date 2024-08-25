@@ -1,6 +1,3 @@
-<?php 
-    $user = new UserModel();
-?>
 <!DOCTYPE html>
 <html lang="de">
     <?php require_once("component/head.php"); ?>

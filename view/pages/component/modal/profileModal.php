@@ -1,6 +1,9 @@
 <!-- Cropper.js CSS -->
 <link rel="stylesheet" href="./css/cropper.min.css">
+<!-- Fileupload.js CSS-->
 <link rel="stylesheet" href="./css/jquery.fileupload.css">
+<!-- select2.min.js CSS-->
+<link rel="stylesheet" href="./css/select2.min.css">
 
 <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -69,6 +72,9 @@
 <!-- aktuell hier bei der Einbindung eines Tools um das Profilbild zu aktualisieren -->
 <script src="./js/jquery.ui.widget.js"></script>
 <script src="./js/jquery.iframe-transport.js"></script>
+<!-- Fileupload.js JS -->
 <script src="./js/jquery.fileupload.js"></script>
 <!-- Cropper.js JS -->
 <script src="./js/cropper.min.js"></script>
+<!-- Select2.js JS -->
+<script src="./js/select2.min.js"></script>

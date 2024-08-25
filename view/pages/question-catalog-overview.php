@@ -139,6 +139,7 @@ $questionCatalog = new QuestionCatalogModel();
         </div>
         <div class="toast-container" id="toastContainer"></div>
     </div>
+    <?php require_once("component/modal/friendListModal.php"); ?>
     <?php include("component/modal/questionCatalogModal.php"); ?>
     <?php include("component/modal/addQuestionModal.php"); ?>
     <?php require_once("component/quizapp-scripts.php"); ?>
