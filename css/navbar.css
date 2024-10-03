@@ -1,3 +1,48 @@
+
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --navbar-background-color: #f8f9fa;
+    --card-background-color: #f8f9fa;
+    --card-text-color: #343a40;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+}
+
+[data-theme="dark"] {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --navbar-background-color: #1f1f1f;
+    --card-background-color: #1e1e1e;
+    --card-text-color: #e0e0e0;
+    --primary-color: #90caf9;
+    --secondary-color: #b0bec5;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.navbar {
+    background-color: var(--navbar-background-color);
+}
+
+.card {
+    background-color: var(--card-background-color);
+    color: var(--card-text-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
 .navbar #avatar-image{
     cursor: pointer;
 }
@@ -79,5 +124,194 @@
 .profile-avatar:hover .avatar-overlay {
     opacity: 1;
 }
+
+/* Switch Styling */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--secondary-color);
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Anpassungen der Symbole */
+.theme-switch-wrapper i {
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
+
+.theme-switch-wrapper .fa-sun {
+    color: #f39c12; /* Sonnensymbol in gelb-orange */
+}
+
+.theme-switch-wrapper .fa-moon {
+    color: #3498db; /* Mondsymbol in blau */
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+/* Original CSS bleibt unverändert */
+
+/* Anpassungen für Bildschirmgrößen von 320px und kleiner */
+@media (max-width: 320px) {
+    /* Navbar Anpassungen */
+    .navbar .container-fluid {
+        padding: 0 10px;
+    }
+
+    .navbar .search-form .form-control {
+        font-size: 0.8rem;
+        padding: 5px;
+    }
+
+    .navbar .search-form .btn {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .navbar #avatar-image {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Breadcrumb Anpassungen */
+    .breadcrumb {
+        font-size: 0.8rem;
+    }
+
+    /* Offcanvas Anpassungen */
+    .offcanvas-body {
+        padding: 10px;
+    }
+
+    .offcanvas .link-hover {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .offcanvas-footer {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    /* Profilemodal Anpassungen */
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .avatar-overlay {
+        font-size: 0.8rem;
+    }
+}
+
+/* Anpassungen für Bildschirmgrößen von 375px und kleiner */
+@media (max-width: 375px) {
+    /* Navbar Anpassungen */
+    .navbar .container-fluid {
+        padding: 0 15px;
+    }
+
+    .navbar .search-form .form-control {
+        font-size: 0.9rem;
+        padding: 6px;
+    }
+
+    .navbar .search-form .btn {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+
+    .navbar #avatar-image {
+        width: 45px;
+        height: 45px;
+    }
+
+    /* Breadcrumb Anpassungen */
+    .breadcrumb {
+        font-size: 0.9rem;
+    }
+
+    /* Offcanvas Anpassungen */
+    .offcanvas-body {
+        padding: 15px;
+    }
+
+    .offcanvas .link-hover {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .offcanvas-footer {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    /* Profilemodal Anpassungen */
+    .profile-avatar {
+        width: 130px;
+        height: 130px;
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .avatar-overlay {
+        font-size: 0.9rem;
+    }
+}
+
 
 

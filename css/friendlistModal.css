@@ -1,46 +1,165 @@
-/* Floating Icon Style */
-.floating-icon {
+.floating-friendlist {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #007bff;
+    background-color: #0d6efd;
     color: white;
     border-radius: 50%;
+    width: 60px;
+    height: 60px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
 }
 
-/* Friendlist Modal Style */
 .friendlist-modal {
-    display: none;
-    position: absolute;
-    width: 300px; /* Breite des Modals */
+    position: fixed;
+    bottom: -100%;
+    right: 5px;
+    width: 425px;
+    max-height: 475px;
     background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    transform-origin: bottom right;
-    z-index: 1001;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transition: bottom 0.3s ease-in-out;
+    height: 475px;
 }
 
-.friendlist-modal.open {
-    transform: scale(1);
-    opacity: 1;
+.friendlist-modal.active {
+    bottom: 0;
 }
 
-.friendlist-modal.close {
-    transform: scale(0);
-    opacity: 0;
+.friendlist-modal-header {
+    background-color: #63e3ff;
+    color: #FFF;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Initiale Position und versteckt */
-.friendlist-modal {
-    transform: scale(0);
-    opacity: 0;
+.friendlist-modal-body {
+    padding: 10px;
+    max-height: 420px;
+    overflow-y: auto;
 }
+
+/* Chat Bubble Styling */
+.chat-bubble {
+    position: fixed;
+    bottom: 70px;
+    right: 5px;
+    width: 425px;  /* Feste Breite */
+    height: 500px; /* Feste Höhe für das gesamte Modal */
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-bubble-header {
+    background-color: #63e3ff;
+    color: white;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-bubble-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Trennt den Verlauf vom Input */
+    height: 100%;
+    background-color: #f8f9fa;
+}
+
+/* Scrollbarer Bereich für die Nachrichtenhistorie */
+#chat-history-container {
+    flex-grow: 1;
+    max-height: 350px; /* Feste Höhe für den Nachrichtenverlauf */
+    overflow-y: auto; /* Scrollbar, wenn der Inhalt zu groß wird */
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chat-history {
+    overflow-y: auto;
+}
+
+.chat-message-bubble {
+    background-color: #0d6efd;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    display: inline-block;
+    max-width: 80%;
+    word-wrap: break-word;
+    clear: both;
+    font-size: 12px;
+}
+
+.chat-message-bubble.received {
+    background-color: #e1e1e1;
+    color: #333;
+    float: left;
+}
+
+.chat-message-bubble.sent {
+    background-color: #0d6efd;
+    color: white;
+    float: right;
+}
+
+/* Eingabefeld fix am unteren Rand */
+.chat-input {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    height: 60px; /* Feste Höhe für den Eingabebereich */
+    background-color: white;
+}
+
+.chat-input textarea {
+    flex-grow: 1;
+    height: 100%; /* Füllt die Höhe des Input-Containers */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    resize: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.send-message {
+    height: 100%; /* Gleiche Höhe wie das Textfeld */
+    padding: 10px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-avatar {
+    width: 40px;  /* Größe des Avatars */
+    height: 40px;
+    border-radius: 50%; /* Runder Avatar */
+    margin-right: 10px; /* Abstand zum Namen */
+}
+
+
+
+

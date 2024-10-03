@@ -134,4 +134,30 @@ class UserModel
         $stmt->bindParam(':id', $this->userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function getOpenQuizSessions(){
+        $stmt = $this->dbh->prepare("
+            SELECT * FROM `quiz_session_players` as qsp
+            INNER JOIN `quiz_sessions` qs ON qsp.quiz_session_id = qs.id
+            WHERE qsp.player_id = :userId AND qs.status = 'active'
+        ");
+        $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $quizSessionArr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $quizSessionArr;
+    }
+
+
+    public function getCompletedQuizSessions(){
+        $stmt = $this->dbh->prepare("
+            SELECT * FROM `quiz_session_players` as qsp
+            INNER JOIN `quiz_sessions` qs ON qsp.quiz_session_id = qs.id
+            WHERE qsp.player_id = :userId AND (qs.status = 'completed' OR qs.status = 'cancelled')
+            ORDER BY qs.updated_at desc
+        ");
+        $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $quizSessionArr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $quizSessionArr;
+    } 
 }

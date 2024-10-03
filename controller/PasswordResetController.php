@@ -36,8 +36,9 @@ class PasswordResetController
     {
         $key = $_POST['key'];
         $newPassword = $_POST['password'];
+        $passwordRepeat = $_POST['password_repeat'];
 
-        $reset = $this->auth->resetPass($key, $newPassword, $newPassword);
+        $reset = $this->auth->resetPass($key, $newPassword, $passwordRepeat);
 
         if (!$reset['error']) {
             MessageHandlerController::addSuccess('Ihr Passwort wurde erfolgreich zurückgesetzt.');

@@ -1,0 +1,193 @@
+  /* Allgemeine Stile */
+  .link-hover:hover {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: ">";
+}
+
+.search-form .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.search-form .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.skeleton-loader {
+    display: inline-block;
+    height: 20px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Grid Layout für gleiche Abstände und Größen */
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 15px;
+    /* Abstand zwischen den Karten */
+    padding: 15px;
+}
+
+/* Kartenlayout und adaptive Textgrößen */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    background-color: white;
+    /* Hintergrundfarbe für die Karten */
+    border-radius: 0.25rem;
+    /* Leicht abgerundete Ecken */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    /* Leichter Schatten für Karten */
+}
+
+.card-img-container {
+    width: 100%;
+    height: 200px;
+    /* Feste Höhe für die Bilder */
+    overflow: hidden;
+    position: relative;
+    max-height: 200px;
+    /* Maximale Höhe für Bilder */
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    /* Bild füllt den gesamten Container aus */
+    object-fit: cover;
+    /* Zuschneiden, um den Container zu füllen */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    padding: 15px;
+    /* Padding innerhalb der Karten */
+}
+
+.card-body h6 {
+    margin-bottom: 10px;
+    font-size: clamp(0.9rem, 1vw, 1.1rem);
+    /* Adaptive Textgröße */
+}
+
+.card-body h4 {
+    margin-bottom: 20px;
+    font-size: clamp(1.2rem, 1vw, 1.5rem);
+    /* Adaptive Titelgröße */
+}
+
+.card-text.question-count,
+.card-text.tutor {
+    margin-bottom: 0.5rem;
+    /* Abstand zwischen den Texten */
+    font-size: clamp(0.9rem, 0.75vw, 1.1rem);
+    /* Adaptive Textgröße */
+}
+
+.btn {
+    align-self: flex-start;
+    margin-top: auto;
+    font-size: clamp(0.9rem, 0.75vw, 1.1rem);
+    /* Adaptive Button-Größe */
+}
+
+/* Anpassungen für den Scrollbereich */
+#main-content {
+    height: calc(100vh - 150px);
+    /* Anpassen der Höhe */
+    overflow-y: auto;
+    padding: 100px;
+    /* Sicherstellen, dass vertikales Scrollen möglich ist */
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 1024px) {
+    .card-img-container {
+        height: 180px;
+        /* Anpassung für kleinere Bildschirme */
+        max-height: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-img-container {
+        height: 160px;
+        /* Anpassung für kleinere Bildschirme */
+        max-height: 160px;
+    }
+
+    .card-text {
+        font-size: clamp(0.8rem, 1.8vw, 1rem);
+        /* Weitere Anpassung für kleinere Bildschirme */
+    }
+
+    #main-content {
+        padding: 0px;
+    }
+}
+
+@media (max-width: 425px) {
+    #grid-container {
+        grid-template-columns: none;
+    }
+}
+
+@media (max-width: 375px) {
+    .card-img-container {
+        height: 140px;
+        /* Anpassung für kleinere Bildschirme */
+        max-height: 140px;
+    }
+
+    .card-text {
+        font-size: clamp(0.7rem, 1.7vw, 0.9rem);
+        /* Weitere Anpassung für kleinere Bildschirme */
+    }
+
+    .btn {
+        font-size: clamp(0.7rem, 1.7vw, 0.9rem) !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .card-img-container {
+        height: 120px;
+        /* Anpassung für kleinere Bildschirme */
+        max-height: 120px;
+    }
+
+    .card-text {
+        font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+        /* Weitere Anpassung für sehr kleine Bildschirme */
+    }
+
+    .btn {
+        font-size: clamp(0.6rem, 1.5vw, 0.8rem) !important
+    }
+}

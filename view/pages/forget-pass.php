@@ -1,13 +1,14 @@
 <?php
-require dirname(__DIR__, 2 ) . "/controller/MessageHandlerController.php";
+require dirname(__DIR__, 2) . "/controller/MessageHandlerController.php";
 
-function showMessage($msg,$type){
+function showMessage($msg, $type)
+{
     $messageClass = '';
 
-    switch($type){
+    switch ($type) {
         case 'error':
             $messageClass = 'alert-danger';
-            break; 
+            break;
         case 'success':
             $messageClass = 'alert-success';
             break;
@@ -20,52 +21,52 @@ function showMessage($msg,$type){
 
     echo $message;
 }
+$error = MessageHandlerController::getError();
+$success = MessageHandlerController::getSuccess();
 ?>
 <!DOCTYPE html>
 <html lang="de">
-    <?php include("component/head.php"); ?>
-    <body class="animsition">
-        <div class="page-wrapper">
-            <?php 
-                $error = MessageHandlerController::getError();
-                $success = MessageHandlerController::getSuccess();
+<?php include("component/head.php"); ?>
 
-                if($error){
-                    showMessage($error,'error'); 
-                }
-                else if($success){
-                    showMessage($success,'success'); 
-                }
-            ?>
-            <div class="page-content--bge5">
-                <div class="container">
-                    <div class="login-wrap">
-                        <div class="login-content">
-                            <div class="login-logo">
-                                <a href="#">
-                                    <img src="images/iu_quizapp_logo.png" class="rounded" alt="Quizapp" />
-                                </a>
-                            </div>
-                            <div class="login-form">
-                                <form action="forget-pass-request" method="post">
-                                    <div class="form-group">
-                                        <label>E-Mail</label>
-                                        <input class="au-input au-input--full" type="text" name="email" placeholder="E-Mail">
-                                    </div><br/>
-                                    <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Passwort zurücksetzen</button>
-                                </form>
-                            </div>
-                        </div>
+<body>
+    <?php
+    if ($error) {
+        showMessage($error, 'error');
+    } else if ($success) {
+        showMessage($success, 'success');
+    }
+    ?>
+    <div class="container d-flex align-items-center justify-content-center">
+        <div class="card shadow-sm w-100" style="max-width: 600px;">
+            <div class="card-body p-5">
+                <!-- Logo Section -->
+                <div class="text-center mb-5">
+                    <a href="#">
+                        <img src="images/iu_quizapp_logo.png" class="img-fluid mb-4 shadow rounded" alt="Quizapp" style="max-width: 150px;" />
+                    </a>
+                    <h3 class="fw-bold">Passwort zurücksetzen</h3>
+                </div>
+
+                <form action="forget-pass-request" method="post">
+                    <!-- E-Mail Input -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-Mail</label>
+                        <input type="email" class="form-control shadow-sm p-2" id="email" name="email" placeholder="E-Mail" required>
                     </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn w-100 mb-4 mt-4 quizapp-blue p-2">Passwort zurücksetzen</button>
+                </form>
+
+                <!-- Zurück zum Login -->
+                <div class="text-center">
+                    <p><a href="login" class="text-decoration-none">Zurück zum Login</a></p>
                 </div>
             </div>
         </div>
+    </div>
+</body>
+<?php include("component/quizapp-scripts.php"); ?>
 
-        <!-- Jquery JS-->
-        <script src="js/jquery-3.7.1.min.js"></script>
-        <script src="js/bootstrap.bundle.min.js"></script>
-        <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    </body>
 </html>
 <!-- end document-->

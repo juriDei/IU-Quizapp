@@ -13,7 +13,7 @@ use PHPAuth\Auth as PHPAuth;
 function checkAuth($auth, $currentRoute)
 {
   // Login-Route und möglicherweise andere öffentliche Routen ausschließen
-  $publicRoutes = ['/quizapp/login', '/quizapp/register', '/quizapp/forget-pass', '/quizapp/activate']; // Fügen Sie hier alle öffentlichen Routen hinzu
+  $publicRoutes = ['/quizapp/login', '/quizapp/register', '/quizapp/forget-pass', '/quizapp/forget-pass-reset', '/quizapp/activate']; // Fügen Sie hier alle öffentlichen Routen hinzu
 
   if (in_array($currentRoute, $publicRoutes)) {
     return;
@@ -45,30 +45,83 @@ $router->post('/register', function () {
   $controller = new RegisterController();
   $controller->register();
 });
+
 $router->post('/forget-pass-request', function () {
   $controller = new PasswordResetController();
   $controller->requestReset();
 });
+
 $router->post('/forget-pass-reset', function () {
   $controller = new PasswordResetController();
   $controller->resetPassword();
 });
+
 $router->post('/login', function () {
   $controller = new LoginController();
   $controller->login();
 });
+
 $router->post('/activate', function () {
   $controller = new ActivationController();
   $controller->activate();
 });
+
 $router->post('/questions/create', function () {
   $controller = new QuestionController();
   $controller->create();
 });
+
 $router->post('/avatar-upload', function () {
   $controller = new UploadController();
   $controller->upload();
 });
+
+$router->post('/quizsession/create', function () {
+  $controller = new QuizSessionController();
+  $controller->create();
+});
+
+$router->post('/quizsession/save-answer', function () {
+  $controller = new QuizSessionController($_SESSION['session_id']);
+  $controller->saveAnswer();
+});
+
+$router->post('/quizsession/complete', function () {
+  $controller = new QuizSessionController($_SESSION['session_id']);
+  $controller->completeQuizSession();
+});
+
+$router->post('/quizsession/cancel', function () {
+  $input = json_decode(file_get_contents('php://input'), true);
+
+    // Überprüfen, ob der Parameter 'quiz_session_id' gesendet wurde
+    if (isset($input['quiz_session_id'])) {
+      $quizSessionId = $input['quiz_session_id'];
+
+      // Hier deinen Controller verwenden, um die Session zu löschen
+      $controller = new QuizSessionController($quizSessionId);
+      $controller->cancel();
+
+      // Erfolgsnachricht zurücksenden
+      echo json_encode(['message' => 'Quizsession erfolgreich abgebrochen!']);
+  } else {
+      // Fehlernachricht, falls der Parameter fehlt
+      http_response_code(400); // Bad Request
+      echo json_encode(['message' => 'Fehler: quiz_session_id fehlt.']);
+  }
+});
+
+$router->post('/quizsession/complete', function () {
+  $controller = new QuizSessionController($_SESSION['session_id']);
+  $controller->completeQuizSession();
+});
+
+$router->post('/questioncatalog/create', function () {
+  $controller = new QuestionController();
+  $controller->createCatalog();
+});
+
+
 
 
 //GET-Routen/Seiten
@@ -130,6 +183,39 @@ $router->get('/logout', function () use ($auth) {
   header('Location: ' . BASE_URL . 'login');
   exit();
 });
+
+$router->get('/quizsession/get-student-answers', function () {
+  $controller = new QuizSessionController($_SESSION['session_id']);
+  $controller->getStudentAnswers();
+});
+
+
+// GET-Route für die Quizsession mit Übergabe der quizsession_id
+$router->get('/quizsession', function () {
+  $_SESSION['view'] = 'Quizsession';
+  include("view/pages/quiz-session.php");
+});
+
+// GET-Route für die Quizsession mit Übergabe der quizsession_id
+$router->get('/quizsessionerror', function () {
+  $_SESSION['view'] = 'Quizsession';
+  include("view/pages/quiz-session-error.php");
+});
+
+
+// GET-Route für die Auswertung der Quiz-Session
+$router->get('/quizsessionresult', function () {
+  $sessionId = $_GET['session_id'] ?? null;
+  if ($sessionId) {
+    $_SESSION['view'] = 'Quizauswertung';
+    include("view/pages/quiz-session-result.php");
+  } else {
+    http_response_code(400);
+    echo json_encode(['message' => 'Session ID fehlt']);
+  }
+});
+
+
 $router->set404(function () {
   include("view/pages/dashboard.php");
 });

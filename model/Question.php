@@ -17,7 +17,7 @@ class QuestionModel
         $stmt->bindParam(':question_type', $questionType);
         $stmt->bindParam(':possible_answers', json_encode($possibleAnswers));
         $stmt->bindParam(':correct_answer', $correctAnswer);
-        $stmt->bindParam(':module_id', $moduleId, PDO::PARAM_INT);
+        $stmt->bindParam(':module_id', $moduleId);
         return $stmt->execute();
     }
 
@@ -45,6 +45,55 @@ class QuestionModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getQuestionsByModuleIdAndTypes($moduleId, $questionTypes = [])
+    {
+        $sql = "SELECT * FROM questions WHERE module_id = :module_id";
+        $params = [':module_id' => $moduleId];
+
+        if (!empty($questionTypes)) {
+            $inClause = [];
+            foreach ($questionTypes as $index => $type) {
+                $paramName = ':question_type_' . $index;
+                $inClause[] = $paramName;
+                $params[$paramName] = $type;
+            }
+            $sql .= " AND question_type IN (" . implode(',', $inClause) . ")";
+        }
+
+        // Statement vorbereiten
+        $stmt = $this->dbh->prepare($sql);
+
+        // Parameter binden
+        foreach ($params as $param => $value) {
+            $stmt->bindValue($param, $value, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getQuestionsByIds($questionIds)
+    {
+        if (empty($questionIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($questionIds), '?'));
+        $sql = "SELECT * FROM questions WHERE id IN ($placeholders) ORDER BY FIELD(id, $placeholders)";
+
+        $stmt = $this->dbh->prepare($sql);
+
+        // Binden der IDs zweimal (für ORDER BY FIELD)
+        $params = array_merge($questionIds, $questionIds);
+        foreach ($params as $index => $id) {
+            $stmt->bindValue($index + 1, $id, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function updateQuestion($id, $questionText, $questionType, $possibleAnswers, $correctAnswer, $moduleId)
     {
         $stmt = $this->dbh->prepare("UPDATE questions SET question_text = :question_text, question_type = :question_type, possible_answers = :possible_answers, correct_answer = :correct_answer, module_id = :module_id WHERE id = :id");
@@ -53,7 +102,7 @@ class QuestionModel
         $stmt->bindParam(':question_type', $questionType);
         $stmt->bindParam(':possible_answers', json_encode($possibleAnswers));
         $stmt->bindParam(':correct_answer', $correctAnswer);
-        $stmt->bindParam(':module_id', $moduleId, PDO::PARAM_INT);
+        $stmt->bindParam(':module_id', $moduleId);
         return $stmt->execute();
     }
 
@@ -64,4 +113,3 @@ class QuestionModel
         return $stmt->execute();
     }
 }
-?>
