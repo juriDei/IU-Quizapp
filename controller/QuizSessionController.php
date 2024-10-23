@@ -1,26 +1,39 @@
 <?php
+
+// Autoload-Funktionalität von Composer laden, um alle benötigten Bibliotheken und Abhängigkeiten bereitzustellen
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
+// Verwendete Klassen aus der PHPAuth-Bibliothek importieren
 use PHPAuth\Config as PHPAuthConfig;
 use PHPAuth\Auth as PHPAuth;
 
+// Controller-Klasse zur Verwaltung von Quiz-Sessions
 class QuizSessionController
 {
+    // Instanzen der benötigten Klassen und Variablen für die Quiz-Session
     protected $quizSessionModel;
     protected $auth;
     protected $dbh;
     protected $gameId;
     protected $studentId;
 
-
+    // Konstruktor: Initialisiert die Verbindung zur Datenbank, die PHPAuth-Instanz und das Quiz-Session-Modell
     public function __construct($gameId = '', $isGameId = true)
     {
+        // Datenbankverbindung holen
         $this->dbh = DBConnection::getDBConnection();
+        
+        // PHPAuth-Konfiguration und Authentifizierungsinstanz initialisieren
         $config = new PHPAuthConfig($this->dbh);
         $this->auth = new PHPAuth($this->dbh, $config);
+        
+        // Aktuelle Benutzer-ID abrufen
         $this->studentId = $this->auth->getCurrentUser()['id'];
+        
+        // Spiel-ID setzen
         $this->gameId = $gameId;
 
+        // Quiz-Session-Modell initialisieren, je nachdem, ob eine Spiel-ID übergeben wurde
         if (!empty($gameId)) {
             $this->quizSessionModel = new QuizSessionModel($gameId, $isGameId);
         } else {
@@ -28,10 +41,13 @@ class QuizSessionController
         }
     }
 
+    // Methode zum Erstellen einer neuen Quiz-Session
     public function create()
     {
+        // Content-Type auf JSON setzen
         header('Content-Type: application/json');
 
+        // Prüfen, ob die Anfrage eine POST-Anfrage ist
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Generiere eine eindeutige game_id im Backend
             $game_id = $this->generateUniqueGameId(8);
@@ -77,10 +93,13 @@ class QuizSessionController
         }
     }
 
-    public function getStatus(){
+    // Methode zum Abrufen des Status der aktuellen Quiz-Session
+    public function getStatus()
+    {
         return $this->quizSessionModel->getStatus();
     }
 
+    // Methode zum Abrufen aller Fragen einer bestimmten Quiz-Session
     public function getAllQuestions($quizSessionId)
     {
         // Abrufen der Quiz-Session-Daten
@@ -105,6 +124,7 @@ class QuizSessionController
         }
     }
 
+    // Methode zum Generieren einer eindeutigen Spiel-ID
     private function generateUniqueGameId($length = 8)
     {
         do {
@@ -118,6 +138,7 @@ class QuizSessionController
         return $game_id;
     }
 
+    // Methode zum Generieren einer Spiel-ID bestehend aus zufälligen Zeichen
     private function generateGameId($length = 8)
     {
         $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Vermeidung ähnlicher Zeichen
@@ -128,12 +149,14 @@ class QuizSessionController
         return $game_id;
     }
 
+    // Methode zum Aktualisieren des Status der Quiz-Session
     public function updateStatus($status)
     {
         $this->quizSessionModel->updateStatus($status);
         echo json_encode(['success' => 'Status erfolgreich aktualisiert']);
     }
 
+    // Geschützte Methode zur Validierung der Eingabedaten für die Quiz-Session
     protected function validateSessionData($data)
     {
         if (
@@ -146,6 +169,7 @@ class QuizSessionController
         return true;
     }
 
+    // Methode zum Speichern der Antwort eines Spielers
     public function saveAnswer()
     {
         // Daten aus dem POST-Body lesen
@@ -166,11 +190,13 @@ class QuizSessionController
         }
     }
 
+    // Methode zum Abrufen der Session-ID einer bestimmten Spiel-ID
     public function getSessionId($gameId)
     {
         $result = $this->quizSessionModel->getQuizSessionId($gameId);
     }
 
+    // Methode zum Abrufen aller gespeicherten Antworten eines Studenten
     public function getStudentAnswers()
     {
         // Benutzer-ID aus der Session abrufen
@@ -186,6 +212,7 @@ class QuizSessionController
         }
     }
 
+    // Methode zum Laden einer Quiz-Session
     public function loadSession()
     {
         $sessionData = $this->quizSessionModel->getQuizSessionData();
@@ -208,9 +235,7 @@ class QuizSessionController
     }
     
 
-    /**
-     * Methode zur Anzeige der Auswertungsergebnisse
-     */
+    // Methode zur Anzeige der Auswertungsergebnisse
     public function showResults()
     {
         // Überprüfen, ob der Benutzer eingeloggt ist
@@ -232,10 +257,10 @@ class QuizSessionController
         // Bewertung der Antworten
         $evaluation = $this->quizSessionModel->evaluateAnswers($questions, $studentAnswers);
 
-
         return $evaluation;
     }
 
+    // Methode zum Abschließen der Quiz-Session
     public function completeQuizSession()
     {
         // Überprüfen, ob der Benutzer eingeloggt ist
@@ -247,31 +272,31 @@ class QuizSessionController
         $this->updateStatus('completed');
     }
 
-        // Methode zum Abbrechen einer Quizsession
-        public function cancel()
-        {
-
-            // Initialisieren des QuizSessionModel mit der Quizsession-ID
-            $this->quizSessionModel = new QuizSessionModel($this->gameId, true);
+    // Methode zum Abbrechen einer Quiz-Session
+    public function cancel()
+    {
+        // Initialisieren des QuizSessionModel mit der Quizsession-ID
+        $this->quizSessionModel = new QuizSessionModel($this->gameId, true);
     
-            // Überprüfen, ob der aktuelle Benutzer berechtigt ist, die Session abzubrechen
-            $players = $this->quizSessionModel->getPlayers();
-            $currentUserId = $this->studentId;
-            $isHost = false;
-            foreach ($players as $player) {
-                if ($player['id'] == $currentUserId && $player['role'] == 'host') {
-                    $isHost = true;
-                    break;
-                }
-            }
-    
-            if ($isHost) {
-                // Session abbrechen
-                $this->quizSessionModel->cancelSession();
-                echo json_encode(['message' => 'Quizsession erfolgreich abgebrochen.']);
-            } else {
-                http_response_code(403);
-                echo json_encode(['message' => 'Sie sind nicht berechtigt, diese Quizsession abzubrechen.']);
+        // Überprüfen, ob der aktuelle Benutzer berechtigt ist, die Session abzubrechen
+        $players = $this->quizSessionModel->getPlayers();
+        $currentUserId = $this->studentId;
+        $isHost = false;
+        foreach ($players as $player) {
+            if ($player['id'] == $currentUserId && $player['role'] == 'host') {
+                $isHost = true;
+                break;
             }
         }
+    
+        if ($isHost) {
+            // Session abbrechen
+            $this->quizSessionModel->cancelSession();
+            echo json_encode(['message' => 'Quizsession erfolgreich abgebrochen.']);
+        } else {
+            http_response_code(403);
+            echo json_encode(['message' => 'Sie sind nicht berechtigt, diese Quizsession abzubrechen.']);
+        }
+    }
 }
+?>
