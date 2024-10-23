@@ -15,19 +15,22 @@ $(document).ready(function() {
 
     // Suchen von Freunden in der Liste
     $('#friend-search').on('input', function() {
-        var filter = $(this).val().toLowerCase();
+        var filter = $(this).val().toLowerCase(); // Den eingegebenen Suchtext in Kleinbuchstaben konvertieren
+        
+        // Alle Einträge in der Freundesliste durchlaufen
         $('.friendlist-modal .entry').each(function() {
             var name = $(this).find('.name').text().toLowerCase();
             var email = $(this).find('.email').text().toLowerCase();
+            
+            // Prüfen, ob der Name oder die E-Mail-Adresse den Suchtext enthält
             if (name.includes(filter) || email.includes(filter)) {
-                $(this).css('display', 'flex');
+                $(this).css('display', 'flex'); // Eintrag anzeigen
             } else {
-                $(this).css('display', 'none');
+                $(this).css('display', 'none'); // Eintrag ausblenden
             }
         });
     });
 
-    
     // Funktion zum Erstellen eines neuen Chatfensters
     function openChatWindow(chatName, chatId) {
         // Prüfen, ob der Chat schon offen ist
@@ -58,13 +61,13 @@ $(document).ready(function() {
     
         // Chat-Fenster verschiebbar machen
         newChat.draggable({
-            handle: ".chat-bubble-header",
-            containment: "window",
+            handle: ".chat-bubble-header", // Das Header-Element als Griffpunkt für das Verschieben nutzen
+            containment: "window", // Bewegung des Fensters auf das Browserfenster beschränken
         });
     
         // Nachricht über Enter-Taste senden
         newChat.find('.chat-message').on('keypress', function (e) {
-            if (e.which === 13) {
+            if (e.which === 13) { // Prüfen, ob die Enter-Taste gedrückt wurde
                 e.preventDefault();
                 sendMessage(chatId);
             }
@@ -81,9 +84,9 @@ $(document).ready(function() {
         });
     }
     
-
+    // Funktion zum Senden einer Nachricht im Chatfenster
     function sendMessage(chatId) {
-        // Nachricht holen
+        // Nachricht aus dem Eingabefeld abrufen
         let message = $('#message-' + chatId).val().trim();
         
         // Sicherstellen, dass die Nachricht nicht leer ist
@@ -103,16 +106,16 @@ $(document).ready(function() {
         }
     }
     
-
-    // Chatfenster schließen
+    // Funktion zum Schließen eines Chatfensters
     function closeChatWindow(chatId) {
+        // Chatfenster langsam ausblenden und dann aus dem DOM entfernen
         openChats[chatId].fadeOut(300, function () {
             $(this).remove();
-            delete openChats[chatId];
+            delete openChats[chatId]; // Chat aus der Liste der offenen Chats entfernen
         });
     }
 
-    // Beispiel: Öffnen eines neuen Chatfensters (ersetze mit deinem eigenen Code)
+    // Beispiel: Öffnen eines neuen Chatfensters (dieser Code kann angepasst werden)
     $('.start-chat').on('click', function () {
         let chatName = $(this).data('name');
         let chatId = $(this).data('chat-id');

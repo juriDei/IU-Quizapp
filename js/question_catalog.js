@@ -1,8 +1,9 @@
 var modulId;
 
+// Funktion zum Laden des Kataloginhalts basierend auf der Modul-ID
 function loadCatalogContent(moduleId) {
   debugger;
-  // Load all questions
+  // Laden aller Fragen im Katalog
   $.ajax({
     url: "questions/catalog-questions",
     type: "GET",
@@ -13,13 +14,16 @@ function loadCatalogContent(moduleId) {
       var questions = JSON.parse(data);
 
       if (!questions.length) {
+        // Falls keine Fragen vorhanden sind, eine entsprechende Nachricht anzeigen
         $("#allQuestionsContent").html(
           "<p class='text-center p-4'>Fragenkatalog enthält noch keine Fragen</p>"
         );
       } else if (questions.error) {
+        // Falls ein Fehler auftritt, den Fehler anzeigen
         $("#allQuestionsContent").html("<p>" + questions.error + "</p>");
       } else {
         var content = "";
+        // Jede Frage durchlaufen und HTML-Inhalt erstellen
         questions.forEach(function (question) {
           var possibleAnswers = JSON.parse(question.possible_answers);
           var answersHtml = possibleAnswers
@@ -39,17 +43,18 @@ function loadCatalogContent(moduleId) {
                 </div>
             `;
         });
+        // Den erstellten Inhalt in das entsprechende HTML-Element einfügen
         $("#allQuestionsContent").html(content);
       }
     },
     error: function (error) {
-      console.error("Error loading all questions:", error);
+      console.error("Fehler beim Laden aller Fragen:", error);
     },
   });
 
-  // Load student questions
+  // Laden der Studentenfragen
   $.ajax({
-    url: "questions/student-questions", // Endpunkt für Studentfragen
+    url: "questions/student-questions", // Endpunkt für Studentenfragen
     type: "GET",
     data: {
       module_id: moduleId,
@@ -57,19 +62,22 @@ function loadCatalogContent(moduleId) {
     success: function (data) {
       var studentQuestions = JSON.parse(data);
       if (!studentQuestions.length) {
+        // Falls keine Studentenfragen vorhanden sind, eine entsprechende Nachricht anzeigen
         $("#studentQuestionsContent").html(
-          "<p class='text-center p-4'>Zu diesem Katalog, wurden noch keine Studentenfragen hinzugefügt</p>"
+          "<p class='text-center p-4'>Zu diesem Katalog wurden noch keine Studentenfragen hinzugefügt</p>"
         );
       } else if (studentQuestions.error) {
+        // Falls ein Fehler auftritt, den Fehler anzeigen
         $("#studentQuestionsContent").html(
           "<p>" + studentQuestions.error + "</p>"
         );
       } else {
         var content = "";
+        // Jede Studentenfrage durchlaufen und HTML-Inhalt erstellen
         studentQuestions.forEach(function (question) {
           var possibleAnswers = JSON.parse(question.possible_answers);
           if (question.question_type != "open") {
-            //Wenn keine offene Frage, werden die Antworten aufgelistet und die richtige mit Haken markiert
+            // Wenn es keine offene Frage ist, werden die Antworten aufgelistet und die richtige mit einem Haken markiert
             var answersHtml = possibleAnswers
               .map(
                 (answer) => `
@@ -85,7 +93,7 @@ function loadCatalogContent(moduleId) {
               )
               .join("");
           } else {
-            //Wenn offene Frage, dann ist wird direkt die Antwort ausgegeben
+            // Wenn es eine offene Frage ist, wird die Antwort direkt ausgegeben
             var answersHtml = possibleAnswers
               .map(
                 (answer) => `
@@ -112,15 +120,17 @@ function loadCatalogContent(moduleId) {
                     </div>
                  `;
         });
+        // Den erstellten Inhalt in das entsprechende HTML-Element einfügen
         $("#studentQuestionsContent").html(content);
       }
     },
     error: function (error) {
-      console.error("Error loading student questions:", error);
+      console.error("Fehler beim Laden der Studentenfragen:", error);
     },
   });
 }
 
+// Funktion zum Aktualisieren der Auswahlmöglichkeiten für die richtige Antwort bei Single-Choice-Fragen
 function updateSingleChoiceCorrectAnswerOptions() {
   var options = "";
   $("#singleChoiceContainer .form-control").each(function (index) {
@@ -130,9 +140,11 @@ function updateSingleChoiceCorrectAnswerOptions() {
   $("#singleChoiceCorrectAnswer").html(options);
 }
 
+// Funktion zum Zurücksetzen des Frage-Modals auf die Standardeinstellungen
 function resetModal() {
-  $("#questionType").val("single");
-  $("#questionText").val("");
+  $("#questionType").val("single"); // Fragetyp auf "Single Choice" setzen
+  $("#questionText").val(""); // Fragentext leeren
+  // Container für Single-Choice-Antworten initialisieren
   $("#singleChoiceContainer").html(
     '<div class="input-group mb-2">' +
       '<input type="text" class="form-control" placeholder="Antwort">' +
@@ -140,6 +152,7 @@ function resetModal() {
       "</div>"
   );
   updateSingleChoiceCorrectAnswerOptions();
+  // Container für Multiple-Choice-Antworten initialisieren
   $("#multipleChoiceContainer").html(
     '<div class="input-group mb-2">' +
       '<div class="input-group-text">' +
@@ -149,11 +162,12 @@ function resetModal() {
       '<button class="btn btn-outline-danger remove-answer-btn" type="button"><i class="fa-solid fa-xmark" title="Frage löschen"></i></button>' +
       "</div>"
   );
-  $("#openQuestionAnswer textarea").val("");
-  $(".answer-section").hide();
-  $("#singleChoiceAnswers").show();
+  $("#openQuestionAnswer textarea").val(""); // Textarea für offene Fragen leeren
+  $(".answer-section").hide(); // Alle Antwortbereiche ausblenden
+  $("#singleChoiceAnswers").show(); // Single-Choice-Bereich anzeigen
 }
 
+// Funktion zum Anzeigen eines Toast-Nachrichts
 function showToast(message, type) {
   const toastHTML = `
         <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -173,39 +187,42 @@ function showToast(message, type) {
   const toast = new bootstrap.Toast(toastElement.querySelector(".toast"));
   toast.show();
 
-  // Remove toast from DOM after it hides
+  // Toast aus dem DOM entfernen, nachdem es ausgeblendet wurde
   toastElement.addEventListener("hidden.bs.toast", () => {
     toastElement.remove();
   });
 }
 
+// Warten, bis das Dokument bereit ist
 $(document).ready(function () {
+  // Event-Listener für das Anzeigen des Fragenkatalogs
   $(".showQuestionCatalog").on("click", function () {
     modulId = $(this).data("modulid");
     loadCatalogContent(modulId);
   });
 
+  // Event-Listener für die Änderung des Fragetyp-Auswahlfeldes
   $("#questionType").on("change", function () {
     var questionType = $(this).val();
-    $(".answer-section").hide();
+    $(".answer-section").hide(); // Alle Antwortbereiche ausblenden
     if (questionType === "single") {
-      $("#singleChoiceAnswers").show();
+      $("#singleChoiceAnswers").show(); // Single-Choice-Bereich anzeigen
     } else if (questionType === "multiple") {
-      $("#multipleChoiceAnswers").show();
+      $("#multipleChoiceAnswers").show(); // Multiple-Choice-Bereich anzeigen
     } else if (questionType === "open") {
-      $("#openQuestionAnswer").show();
+      $("#openQuestionAnswer").show(); // Offene Fragen-Bereich anzeigen
     }
   });
 
-  // Show the add question modal
+  // Event-Listener zum Anzeigen des Modals zum Erstellen einer Frage
   $("#createQuestionBtn").on("click", function () {
-    //Hier wird das Modal bei jedem Aufruf zurückgesetzt
+    // Modal wird bei jedem Aufruf zurückgesetzt
     resetModal();
     $("#questionType").val("single").trigger("change");
     $("#addQuestionModal").modal("show");
   });
 
-  // Add Single Choice Answer
+  // Event-Listener zum Hinzufügen einer neuen Single-Choice-Antwort
   $("#addSingleChoiceAnswer").on("click", function () {
     var newAnswer =
       '<div class="input-group mb-2">' +
@@ -216,7 +233,7 @@ $(document).ready(function () {
     updateSingleChoiceCorrectAnswerOptions();
   });
 
-  // Add Multiple Choice Answer
+  // Event-Listener zum Hinzufügen einer neuen Multiple-Choice-Antwort
   $("#addMultipleChoiceAnswer").on("click", function () {
     var newAnswer =
       '<div class="input-group mb-2">' +
@@ -229,12 +246,13 @@ $(document).ready(function () {
     $("#multipleChoiceContainer").append(newAnswer);
   });
 
-  // Remove answer
+  // Event-Listener zum Entfernen einer Antwort
   $(document).on("click", ".remove-answer-btn", function () {
     $(this).closest(".input-group").remove();
     updateSingleChoiceCorrectAnswerOptions();
   });
 
+  // Event-Listener zum Speichern einer neuen Frage
   $("#saveQuestionBtn").on("click", function () {
     var questionType = $("#questionType").val();
     var questionText = $("#questionText").val();
@@ -271,9 +289,10 @@ $(document).ready(function () {
       questionType: questionType,
       possibleAnswers: possibleAnswers,
       correctAnswer: correctAnswer,
-      moduleId: modulId, // Hier können Sie die tatsächliche Modul-ID einfügen
+      moduleId: modulId, // Modul-ID setzen
     };
 
+    // AJAX-Anfrage zum Speichern der Frage
     $.ajax({
       url: "questions/create",
       type: "POST",
@@ -285,21 +304,22 @@ $(document).ready(function () {
         showToast("Frage wurde erfolgreich erstellt", "success");
       },
       error: function (error) {
-        console.error("Error saving question:", error);
+        console.error("Fehler beim Erstellen der Frage:", error);
         showToast(
-          "Beim erstellen der Frage ist ein Fehler aufgetreten",
+          "Beim Erstellen der Frage ist ein Fehler aufgetreten",
           "danger"
         );
       },
     });
   });
 
+  // Lade-Skelett nach einer gewissen Zeit ausblenden und Hauptinhalt anzeigen
   setTimeout(function () {
     $("#skeleton-loader").hide();
     $("#main-content").show();
-  }, 1000); // Simulated loading time
+  }, 1000); // Simulierte Ladezeit
 
-  // Function to handle toggle answers button click
+  // Event-Listener für den Button, um die Antworten einer Frage umzuschalten
   $(document).on("click", ".toggle-answers", function () {
     var answersDiv = $(this).siblings(".answers");
     if (answersDiv.is(":visible")) {
@@ -311,11 +331,13 @@ $(document).ready(function () {
     }
   });
 
+  // Event-Listener für das Absenden des Formulars zum Erstellen eines Fragenkatalogs
   $("#addQuestionCatalogForm").on("submit", function (event) {
     event.preventDefault(); // Verhindert das Standardformularverhalten
 
     var formData = new FormData(this);
     
+    // AJAX-Anfrage zum Erstellen eines Fragenkatalogs
     $.ajax({
       url: "questioncatalog/create",
       type: "POST",

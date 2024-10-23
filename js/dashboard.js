@@ -1,67 +1,89 @@
 function animateProgressBarQuestions() {
+    // Elemente für den Fortschrittswert und den Fortschrittskreis abrufen
     let $progressValue = $('#progress-value-questions');
     let $progressCircle = $('#progress-circle-questions');
+
+    // Fortschritt-Daten (abgeschlossen und Gesamtzahl) aus dem Text abrufen und in Zahlen umwandeln
     let [completed, total] = $progressValue.text().split(' / ').map(Number);
     let currentProgress = 0;
     let targetValue = Math.floor((completed / total) * 100);
+
+    // Intervall für die Animation des Fortschrittsbalkens festlegen
     let interval = setInterval(() => {
+        // Prüfen, ob der aktuelle Fortschritt den Zielwert erreicht oder überschritten hat
         if (currentProgress >= targetValue) {
             clearInterval(interval);
         } else {
             currentProgress++;
+            // Fortschrittswert aktualisieren
             $progressValue.text(`${completed} / ${total}`);
+            // Fortschrittskreis aktualisieren, indem die Farbe in einem conic-gradient angepasst wird
             $progressCircle.css('background', `conic-gradient(#0d6efd ${currentProgress * 3.6}deg, #e9ecef 0deg)`);
         }
     }, 20); // Geschwindigkeit der Animation
 }
 
 function animateProgressBarQuizzes() {
+    // Elemente für den Fortschrittswert und den Fortschrittskreis abrufen
     let $progressValue = $('#progress-value-quizzes');
     let $progressCircle = $('#progress-circle-quizzes');
-    let targetValue = parseInt($progressValue.text()); // Prozentzahl aus dem Text extrahieren
+    
+    // Zielwert als Prozentzahl aus dem Text abrufen
+    let targetValue = parseInt($progressValue.text());
     let currentProgress = 0;
+
+    // Intervall für die Animation des Fortschrittsbalkens festlegen
     let interval = setInterval(() => {
         if (currentProgress >= targetValue) {
             clearInterval(interval);
         } else {
             currentProgress++;
+            // Fortschrittswert aktualisieren
             $progressValue.text(`${currentProgress}%`);
+            // Fortschrittskreis aktualisieren, indem die Farbe in einem conic-gradient angepasst wird
             $progressCircle.css('background', `conic-gradient(#0d6efd ${currentProgress * 3.6}deg, #e9ecef 0deg)`);
         }
     }, 10); // Geschwindigkeit der Animation
 }
 
 function animateCompletedQuizzes() {
+    // Element für die abgeschlossenen Quiz abrufen
     let $completedQuizzes = $('#completed-quizzes');
     let targetValue = 15; // Beispielwert für absolvierte Quizspiele
     let currentProgress = 0;
+
+    // Intervall für die Animation der abgeschlossenen Quiz festlegen
     let interval = setInterval(() => {
         if (currentProgress >= targetValue) {
             clearInterval(interval);
         } else {
             currentProgress++;
+            // Aktualisierung des Wertes der abgeschlossenen Quiz
             $completedQuizzes.text(currentProgress);
         }
     }, 35); // Geschwindigkeit der Animation
 }
 
 function setAverageGradeColor() {
+    // Element für die durchschnittliche Note abrufen
     let $averageGrade = $('#average-grade');
     let gradeText = $averageGrade.text().split(': ')[1]; // Note aus dem Text extrahieren
     let grade = parseFloat(gradeText);
 
+    // Farbe der durchschnittlichen Note basierend auf dem Wert setzen
     if (grade < 3) {
-        $averageGrade.removeClass().addClass('average-grade grade-green');
+        $averageGrade.removeClass().addClass('average-grade grade-green'); // Grün für gute Noten
     } else if (grade < 4) {
-        $averageGrade.removeClass().addClass('average-grade grade-yellow');
+        $averageGrade.removeClass().addClass('average-grade grade-yellow'); // Gelb für mittel
     } else if (grade <= 4) {
-        $averageGrade.removeClass().addClass('average-grade grade-orange');
+        $averageGrade.removeClass().addClass('average-grade grade-orange'); // Orange für knapp ausreichend
     } else {
-        $averageGrade.removeClass().addClass('average-grade grade-red');
+        $averageGrade.removeClass().addClass('average-grade grade-red'); // Rot für schlecht
     }
 }
 
 function animateProgressBarRecentGames() {
+    // Für jedes Fortschrittskreis-Element im recent-games-wrapper den Fortschritt animieren
     $('#recent-games-wrapper .progress-circle').each(function() {
         let $progressValue = $(this).find('.progress-value');
         let $progressCircle = $(this);
@@ -74,16 +96,19 @@ function animateProgressBarRecentGames() {
                 clearInterval(interval);
             } else {
                 currentProgress++;
+                // Fortschrittswert aktualisieren
                 $progressValue.text(`${currentProgress}%`);
+                // Fortschrittskreis aktualisieren, indem die Farbe angepasst wird
                 $progressCircle.css('background', `conic-gradient(${circleColor} ${currentProgress * 3.6}deg, #e0e0e0 0deg)`);
-                $progressValue.css('color', circleColor); // Textfarbe ändern
+                $progressValue.css('color', circleColor); // Textfarbe anpassen
             }
         }, 10); // Geschwindigkeit der Animation
     });
 }
 
-
+// jQuery bereit, um die Animationen zu starten, sobald das Dokument geladen ist
 $(document).ready(() => {
+    // Animationsfunktionen aufrufen
     animateProgressBarQuestions();
     animateProgressBarQuizzes();
     animateCompletedQuizzes();
@@ -124,8 +149,8 @@ $(document).ready(() => {
         $('#mode').val(''); // Modus zurücksetzen
     });
 
-     // AJAX-Anfrage beim Klicken auf "Quiz starten" im Einzelspieler-Modus
-     $('#start-singleplayer-quiz-btn').click(function() {
+    // AJAX-Anfrage beim Klicken auf "Quiz starten" im Einzelspieler-Modus
+    $('#start-singleplayer-quiz-btn').click(function() {
         // Sammle die Formulardaten
         var formData = $('#quiz-form').serialize();
 
@@ -164,7 +189,7 @@ $(document).ready(() => {
                 dataType: 'json',
                 success: function(data) {
                     // Weiterleitung zur Multiplayer-Session, sobald eine Lobby gefunden wurde
-                    //window.location.href = 'quizsession?session_id=' + data.game_id;
+                    window.location.href = 'quizsession?session_id=' + data.game_id;
                 },
                 error: function(xhr, status, error) {
                     console.error('Fehler beim Senden der Anfrage:', error);
